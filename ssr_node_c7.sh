@@ -96,10 +96,16 @@ systemctl stop firewalld && systemctl disable firewalld
 echo "Setting system timezone..."
 timedatectl set-timezone Asia/Taipei && systemctl stop ntpd.service && ntpdate us.pool.ntp.org
 echo "Installing libsodium..."
-yum install libsodium -y
+yum -y groupinstall "Development Tools"
+wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.16.tar.gz
+tar xf libsodium-1.0.16.tar.gz && cd libsodium-1.0.16
+./configure && make -j2 && make install
+echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
+ldconfig
+
 mkdir /soft
 echo "Installing Shadowsocksr server from GitHub..."	
-cd /tmp && git clone -b manyuser https://github.com/NimaQu/shadowsocks.git	
+cd /tmp && git clone -b manyuser https://github.com/lizhongnian/shadowsocks.git
 mv -f shadowsocks /soft
 cd /soft/shadowsocks
 pip install --upgrade pip setuptools
